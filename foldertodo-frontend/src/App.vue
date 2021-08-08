@@ -9,6 +9,12 @@
 import HelloWorld from './components/HelloWorld.vue'
 
 export default {
+   created() {
+    fetch('http://localhost:8000/api/user', {mode:
+    'cors'}).then((resp) =>
+    console.log(resp))
+  },
+
   name: 'App',
   components: {
     HelloWorld

@@ -74,6 +74,32 @@
               rounded="lg"
             >
               <!--  -->
+              <v-main>
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="11"
+                    >
+                      <v-text-field
+                        v-model="todoList"
+                        :rules="folderTodoRules"
+                        :counter="10"
+                        label="Todo List"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      v-for="n in 24"
+                      :key="n"
+                      cols="4"
+                    >
+                      <v-card height="200"></v-card>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-main>
             </v-sheet>
           </v-col>
         </v-row>
@@ -87,10 +113,13 @@
     data: () => ({
       links: [
         'Dashboard',
-        'Messages',
-        'Profile',
-        'Updates',
       ],
+      todoList:'',
+      todos: {},
+      folderTodoRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters',
+      ],  
     }),
   }
 </script>

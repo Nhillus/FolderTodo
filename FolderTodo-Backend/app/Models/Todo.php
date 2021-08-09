@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Todo extends Model
 {
-    Protected $fillable = ["nombre","estado"] ;
+    Protected $fillable = ["nombre"] ;
+    Protected $cast = ['estado' => 'boolean'];
 
     public function agregarTodo($nombre) {
         $todo = new Todo;
@@ -32,11 +33,31 @@ class Todo extends Model
     /*public function verTodo() {
         return todo();
     }*/ //esta es para ver una en especifico refactorizar
-    public function eliminarTodo() {
+    public function eliminarTodo($id) {
+        $todo = Todo::findOrFail($id);
+        $todoEliminada = $todo->nombre; //luego esta linea se refactoriza
+        $todo->destroy($id);
+        if (!$todo) {
+            return response()->json(["success"=>false, "message" =>'No se pudo encontrar la actividad o no se pudo eliminar consultar con dev'],500);
+        }
+        return response()->json(["success"=>true, 
+                                 "message" =>'Encontrado con exito la actividad y Eliminada', 
+                                 "Actividad_Eliminada" => $todoEliminada,],200);
 
     }
 
-    public function modificarTodo() {
+    public function modificarTodo($id,$nombre) {
+        $todo = Todo::findOrFail($id);
+        $todoModificada = $todo->nombre; //luego esta linea se refactoriza
+        $todo->nombre = $nombre;
+        $todo->save();
+        if (!$todoModificada) {
+            return response()->json(["success"=>false, "message" =>'No se pudo encontrar la todo o no se pudo modificar consultar con dev'],500);
+        }
+        return response()->json(["success"=>true, 
+                                 "message" =>'Encontrado con exito la todo y modificada', 
+                                 "Todo_Previa_A_La_Modificacion" => $todoModificada,
+                                 "Todo_Actual" => $todo],200);
 
     }
 

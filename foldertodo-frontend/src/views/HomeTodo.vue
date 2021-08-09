@@ -82,6 +82,7 @@
                         cols="11"
                       >
                         <v-text-field
+                          v-if="!dialog"
                           v-model="todoList.nombre"
                           :rules="folderTodoRules"
                           :counter="10"
@@ -96,10 +97,74 @@
                         :key="idx"
                         cols="4"
                       >
-                        <v-card height="50">
-                            <v-list-item-content v-on:click.prevent="selecionarActividad(actividad.id,actividad.nombre)" >
+                        <v-card height="70">
+                            <v-list-item-content v-on:click.prevent="selecionarTodo(todo.id,todo.nombre)" >
                               <v-list-item-title>
-                              {{todo.nombre}}
+                                <v-btn icon fab>
+                                  <v-checkbox @click.prevent="modificarEstatus()"
+                                    v-model="todo.estado" 
+                                    color="success"
+                                    value=1
+                                  ></v-checkbox>
+                                </v-btn>
+                                {{todo.nombre}}
+                                <v-btn color="primary" class="ml-2" icon fab x-small >
+                                  <v-col cols="auto">
+                                    <v-btn
+                                      color="primary"
+                                      class="ml-2"
+                                      icon fab 
+                                      
+                                    ><v-icon v-on:click="dialog = true" >mdi-file-document-edit</v-icon>
+                                    </v-btn>
+                                    <v-btn color="primary"  icon fab x-small >
+                                      <v-col>
+                                        <v-btn
+                                          icon fab
+                                          color="red darken-4"
+                                          @click="eliminarTodo(todo.id)"
+                                          >
+                                            <v-icon >
+                                              mdi-delete-forever  
+                                            </v-icon>
+                                        </v-btn>
+                                      </v-col>
+                                    </v-btn>
+                                    <v-dialog
+                                      transition="dialog-top-transition"
+                                      max-width="600"
+                                      v-model="dialog"
+                                      :retain-focus="false"
+                                    >
+                                      <v-card>
+                                        <v-toolbar
+                                          color="primary"
+                                          dark 
+                                        >Modificando {{todoSelecionado.nombre}}</v-toolbar>
+                                        <v-card-text>
+                                          <v-text-field
+                                            v-model="todoList.nombre"
+                                            :rules="folderTodoRules"
+                                            :counter="10"
+                                            label="Todo Folder"
+                                            required
+                                          ></v-text-field>                        
+                                        </v-card-text>
+                                        <v-card-actions class="justify-end">
+                                          <v-btn
+                                            text
+                                            :rules="folderTodoRules"
+                                            :counter="10"
+                                            @click="modificarTodo()"
+                                          >Modificar</v-btn>
+                                          <v-btn
+                                            text
+                                          @click="dialog = false">Cancelar</v-btn>
+                                        </v-card-actions>
+                                      </v-card>
+                                    </v-dialog>
+                                  </v-col>
+                                </v-btn>
                               </v-list-item-title>
                             </v-list-item-content>
                         </v-card>
@@ -124,6 +189,7 @@
       links: [
         'Dashboard',
       ],
+      dialog:false,
       valid:false,
       todoList: {
         id:'',
@@ -133,7 +199,8 @@
         id:'',
         nombre:'',
       },
-      actividadAEliminar:null,
+      todoAModificar:null,
+      todoAEliminar:null,
       todos: {},
       folderTodoRules: [
         v => !!v || 'Name is required',
@@ -161,14 +228,47 @@
 
         },
         selecionarTodo(idTodo,nombreTodo) {
-          this.folderSelecionado.id = idTodo; //1 refactor entre estas dos funciones 
-          this.folderSelecionado.nombre = nombreTodo;
-          this.actividadAEliminar = idActividad;
+          this.todoSelecionado.id = idTodo; //1 refactor entre estas dos funciones 
+          this.todoSelecionado.nombre = nombreTodo;
+          this.todoAEliminar = idTodo;
 
           //this.verActividades();
-          console.log(this.folderSelecionado.id, this.folderSelecionado.nombre );
+          console.log(this.todoSelecionado.id, this.todoSelecionado.nombre );
 
         },
+        modificarTodo() {
+          this.todoList.id = this.todoSelecionado.id;
+          axios
+            .put('http://localhost:8000/api/modificartodo',this.todoList)
+            .then((response) => {
+            if (response.status == 200) {
+                  //this.actividades.put(response.data.Actividad);
+                  this.todoAModificar = this.todoList.id;
+                  console.log(this.todoAModificar);
+                  let objIndex = this.todos.findIndex((obj => obj.id ==this.todoAModificar));
+                  this.todos[objIndex].nombre = this.todoList.nombre;
+                  console.log(objIndex);
+                  this.dialog = false;
+            }
+              console.log(response);
+          }); 
+        },
+        modificarEstatus() {
+         
+        },
+        estaEliminando(id) {
+          this.todoAEliminar = id;
+        },
+        async eliminarTodo(id) {
+          let index = this.todos.findIndex(todo => todo.id === id)
+           await axios
+            .delete('http://localhost:8000/api/eliminartodo'+'/'+ id)  
+            .then((response) => {
+              this.todos.splice(index,1);
+              console.log(response);
+              
+          });
+        }
     }
   }
 </script>

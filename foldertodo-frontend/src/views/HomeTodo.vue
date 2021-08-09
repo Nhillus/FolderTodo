@@ -72,7 +72,7 @@
                               class="ml-2"
                               icon fab 
                               
-                            ><v-icon v-on:click="dialog = true" >mdi-folder-edit</v-icon>
+                            ><v-icon v-on:click="dialogFolder = true" >mdi-folder-edit</v-icon>
                             </v-btn>
                           <v-dialog
                             transition="dialog-top-transition"
@@ -361,7 +361,14 @@
           }); 
 
         },
-        selecionarFolder() {
+        selecionarFolder(idFolder,nombreFolder) {
+          this.folderSelecionado.id = idFolder; //1 refactor entre estas dos funciones 
+          this.folderSelecionado.nombre = nombreFolder;
+          this.folderAEliminar = idFolder;
+
+          //this.verActividades();
+          console.log(this.folderSelecionado.id, this.folderSelecionado.nombre );
+
 
         },
         selecionarTodo(idTodo,nombreTodo) {
@@ -374,7 +381,21 @@
 
         },
         modificarFolder() {
-
+          this.folderTodo.id = this.folderSelecionado.id;
+          axios
+            .put('http://localhost:8000/api/modificarfolder',this.folderTodo)
+            .then((response) => {
+            if (response.status == 200) {
+                  //this.actividades.put(response.data.Actividad);
+                  this.folderAModificar = this.folderTodo.id;
+                  console.log(this.folderAModificar);
+                  let objIndex = this.folders.findIndex((obj => obj.id ==this.folderAModificar));
+                  this.folders[objIndex].nombre = this.folderTodo.nombre;
+                  console.log(objIndex);
+                  this.dialogFolder = false;
+            }
+              console.log(response);
+          }); 
         },
         modificarTodo() {
           this.todoList.id = this.todoSelecionado.id;
@@ -398,10 +419,18 @@
         },
         estaEliminando(id) {
           this.todoAEliminar = id;
+          this.dialogDelete = true;
         },
 
-        async eliminarFolder() {
-
+        async eliminarFolder(id) {
+          let index = this.folders.findIndex(folder => folder.id === id)
+           await axios
+            .delete('http://localhost:8000/api/eliminarfolder'+'/'+ id)  
+            .then((response) => {
+              this.folders.splice(index,1);
+              this.dialogDelete = false;
+              console.log(response);
+          });
         },
 
         async eliminarTodo(id) {

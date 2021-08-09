@@ -27,9 +27,13 @@ Route::get('/todos','TodoController@index');
 Route::post('/agregartodo', 'TodoController@store');
 Route::put('/modificartodo', 'TodoController@update');
 Route::delete('/eliminartodo/{id}', 'TodoController@destroy');
-
+/*--------------- Rutas FolderTodo ----------------------------*/
 Route::get('/folders','FolderController@index');
 Route::post('/agregarfolder', 'FolderController@store');
+Route::put('/modificarfolder', 'FolderController@update');
+Route::delete('/eliminarfolder/{id}', 'FolderController@destroy');
+
+
 
 
 

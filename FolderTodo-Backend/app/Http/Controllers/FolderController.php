@@ -18,4 +18,15 @@ class FolderController extends Controller
         $response=$folder->agregarFolder($request->nombre);
         return $response;
     }
+    public function Update(Request $request) {
+        $folder = new Folder;
+        $response = $folder->modificarFolder($request->id,$request->nombre);
+        return $response;
+    }
+    public function Destroy($id) {
+        $folder = new Folder;
+        $response = $folder->eliminarFolder($id);
+        return $response;
+    }
+
 }

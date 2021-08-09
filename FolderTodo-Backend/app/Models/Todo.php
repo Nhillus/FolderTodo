@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Folder;
 
 class Todo extends Model
 {
@@ -65,4 +66,10 @@ class Todo extends Model
         $todos = Todo::all();
         return $todos; 
     }
+
+    public function folder() {
+        return $this->belongsTo(Folder::class);
+    }
+
+
 }

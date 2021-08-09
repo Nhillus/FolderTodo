@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Todo;
 
 class Folder extends Model
 {
@@ -50,6 +51,10 @@ class Folder extends Model
         return response()->json(["success"=>true, 
                                  "message" =>'Encontrado con exito la folder y Eliminada', 
                                  "Folder_Eliminada" => $folderEliminada,],200);
+    }
+
+    public function todos(){
+        return $this->hasMany(Todo::class);
     }
     
 }

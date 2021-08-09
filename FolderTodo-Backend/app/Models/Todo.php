@@ -9,7 +9,16 @@ class Todo extends Model
     Protected $fillable = ["nombre","estado"] ;
 
     public function agregarTodo($nombre) {
-        $todoGuardada = Todo::Create($nombre);
+        $todo = new Todo;
+        $todo->nombre = $nombre;
+        $todo->estado = 0;
+        $todo->save();
+        if (!$todo) {
+            return response()->json(["success"=>false, "message" =>'Registro de todo fallida'],500);
+        }
+        return response()->json(["success"=>true, 
+                                 "message" =>'Registro de todo exitoso', 
+                                 "todo" => $todo],201);
     }
     public function selecionarTodo($id) {
         $todo = Todo::findOrFail($id);

@@ -23,5 +23,6 @@ Route::get('/user', function (Request $request){
 });
 
 Route::get('/todos','TodoController@index');
+Route::post('/agregartodo', 'todoController@store');
 
 

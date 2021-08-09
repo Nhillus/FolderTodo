@@ -13,5 +13,9 @@ class TodoController extends Controller
         $allTodos = $todo->getAllTodos();
         return ['todos'=> $allTodos];
     }
-
+    public function store(Request $request) {
+            $todo = new Todo;
+            $response=$todo->agregarTodo($request->nombre);
+            return $response;
+    }
 }

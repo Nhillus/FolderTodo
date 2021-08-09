@@ -15,6 +15,7 @@ class CreateFoldersTable extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre',10);
             $table->timestamps();
         });
     }

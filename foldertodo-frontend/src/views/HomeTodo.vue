@@ -37,34 +37,140 @@
     <v-main class="grey lighten-3">
       <v-container>
         <v-row>
-          <v-col cols="2">
+          <v-col cols="3">
             <v-sheet rounded="lg">
-              <v-list color="transparent">
-                <v-list-item
-                  v-for="n in 5"
-                  :key="n"
-                  link
-                >
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      List Item {{ n }}
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
+              <v-form v-model="valid" v-on:submit.prevent="agregarFolder()">
+                <v-container>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                    >
+                      <v-text-field
+                        v-model="folderTodo.nombre"
+                        :rules="folderTodoRules"
+                        :counter="10"
+                        label="Todo Folder"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+              <v-list >
+              <v-list-item
+                v-for="(folder,idx) in folders "
+                :key="idx"
+                link
+              >
+                <v-list-item-content >
+                  <v-list-item-title class="text-justify" v-on:click.prevent="selecionarFolder(folder.id,folder.nombre)">
+                  {{ folder.nombre }}
+                    <v-btn color="primary" class="ml-2" icon fab x-small >
+                      <v-col cols="auto">
+                            <v-btn
+                              color="primary"
+                              class="ml-2"
+                              icon fab 
+                              
+                            ><v-icon v-on:click="dialog = true" >mdi-folder-edit</v-icon>
+                            </v-btn>
+                          <v-dialog
+                            transition="dialog-top-transition"
+                            max-width="600"
+                            v-model="dialogFolder"
+                            :retain-focus="false"
+                          >
+                            <v-card>
+                              <v-toolbar
+                                color="primary"
+                                dark 
+                              >Modificando {{folderSelecionado.nombre}}</v-toolbar>
+                              <v-card-text>
+                                <v-text-field
+                                  v-model="folderTodo.nombre"
+                                  :rules="folderTodoRules"
+                                  :counter="10"
+                                  label="Todo Folder"
+                                  required
+                                ></v-text-field>                        
+                              </v-card-text>
+                              <v-card-actions class="justify-end">
+                                <v-btn
+                                  text
+                                  :rules="folderTodoRules"
+                                  :counter="10"
+                                  @click="modificarFolder()"
+                                >Modificar</v-btn>
+                                <v-btn
+                                  text
+                                @click="dialogFolder = false">Cancelar</v-btn>
+                              </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                      </v-col>
+                    </v-btn>
+                    <v-btn
+                    icon fab
+                    color="red darken-4"
+                    @click="estaEliminando(folder.id)"
+                    >
+                      <v-icon >
+                        mdi-delete  
+                      </v-icon>
+                      <v-dialog
+                        persistent
+                        max-width="300"
+                        v-model="dialogDelete"
+                        :retain-focus="false"
+                      >
+                        <v-card>
+                          <v-toolbar
+                            color="red accent-4"
+                            dark 
+                          >
+                          <v-card-title class="text-h6">
+                            ¿Estas seguro que desea eliminar esta carpeta?
+                          </v-card-title>
+                          </v-toolbar>
+                          <v-card-text>
+                            <v-card-text>Al eliminar la carpeta eliminaras todos los items que contiene ¿Deseas continuar? </v-card-text>                        
+                          </v-card-text>
+                          <v-card-actions >
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="green darken-1"
+                              text
+                              @click="eliminarFolder(folderAEliminar)"
+                            >
+                              Confirmar
+                            </v-btn>
+                            <v-btn
+                              color="green darken-1"
+                              text
+                              @click="dialogDelete = false"
+                            >
+                              Cancelar
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-btn>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider class="my-2"></v-divider>
 
-                <v-divider class="my-2"></v-divider>
-
-                <v-list-item
-                  link
-                  color="grey lighten-4"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      Refresh
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
+              <v-list-item
+                link
+                color="grey lighten-4"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Refresh
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
             </v-sheet>
           </v-col>
 
@@ -79,7 +185,7 @@
                   <v-container>
                     <v-row>
                       <v-col
-                        cols="11"
+                        cols="10"
                       >
                         <v-text-field
                           v-if="!dialog"
@@ -189,8 +295,18 @@
       links: [
         'Dashboard',
       ],
+      dialogFolder:false,
+      dialogDelete:false,
       dialog:false,
       valid:false,
+      folderTodo: {
+        id:'',
+        nombre:'',
+      },
+      folderSelecionado: {
+        id:'',
+        nombre:'',
+      },
       todoList: {
         id:'',
         nombre:'',
@@ -199,8 +315,12 @@
         id:'',
         nombre:'',
       },
+      folderSelecionada: null,
+      folderAModificar:null,
+      folderAEliminar:null,
       todoAModificar:null,
       todoAEliminar:null,
+      folders: {},
       todos: {},
       folderTodoRules: [
         v => !!v || 'Name is required',
@@ -209,13 +329,27 @@
     }),
     async created() { 
      try {
+            const responseF = await axios.get('http://localhost:8000/api/folders')
+            this.folders = responseF.data.Folders
             const response = await axios.get('http://localhost:8000/api/todos')
             this.todos = response.data.todos
+            
         } catch (e) {
             // handle the error here
         }
     },
     methods: {
+      agregarFolder() {
+          axios
+          .post('http://localhost:8000/api/agregarfolder',this.folderTodo)
+          .then((response) => {
+            if (response.status == 201) {
+                  this.folders.push(response.data.Folder);
+            }
+              console.log(response);
+          }); 
+
+        },
       agregarTodo() {
           axios
           .post('http://localhost:8000/api/agregartodo',this.todoList)
@@ -227,6 +361,9 @@
           }); 
 
         },
+        selecionarFolder() {
+
+        },
         selecionarTodo(idTodo,nombreTodo) {
           this.todoSelecionado.id = idTodo; //1 refactor entre estas dos funciones 
           this.todoSelecionado.nombre = nombreTodo;
@@ -234,6 +371,9 @@
 
           //this.verActividades();
           console.log(this.todoSelecionado.id, this.todoSelecionado.nombre );
+
+        },
+        modificarFolder() {
 
         },
         modificarTodo() {
@@ -259,6 +399,11 @@
         estaEliminando(id) {
           this.todoAEliminar = id;
         },
+
+        async eliminarFolder() {
+
+        },
+
         async eliminarTodo(id) {
           let index = this.todos.findIndex(todo => todo.id === id)
            await axios

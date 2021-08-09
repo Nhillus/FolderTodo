@@ -22,9 +22,15 @@ Route::get('/user', function (Request $request){
     return response() -> json(['success'=>true,]);
 });
 
+/*--------------- Rutas TodoList----------------------------*/
 Route::get('/todos','TodoController@index');
-Route::post('/agregartodo', 'todoController@store');
-Route::put('/modificartodo', 'todoController@update');
-Route::delete('/eliminartodo/{id}', 'todoController@destroy');
+Route::post('/agregartodo', 'TodoController@store');
+Route::put('/modificartodo', 'TodoController@update');
+Route::delete('/eliminartodo/{id}', 'TodoController@destroy');
+
+Route::get('/folders','FolderController@index');
+Route::post('/agregarfolder', 'FolderController@store');
+
+
 
 

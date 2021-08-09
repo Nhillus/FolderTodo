@@ -22,4 +22,6 @@ Route::get('/user', function (Request $request){
     return response() -> json(['success'=>true,]);
 });
 
+Route::get('/todos','TodoController@index');
+
 

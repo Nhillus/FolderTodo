@@ -91,11 +91,17 @@
                   </v-row>
                   <v-row>
                     <v-col
-                      v-for="n in 24"
-                      :key="n"
+                      v-for="(todo,idx) in todos"
+                      :key="idx"
                       cols="4"
                     >
-                      <v-card height="200"></v-card>
+                      <v-card height="50">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                            {{todo.nombre}}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                      </v-card>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -109,7 +115,9 @@
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
+    name:"HomeTodo",
     data: () => ({
       links: [
         'Dashboard',
@@ -121,5 +129,13 @@
         v => v.length <= 10 || 'Name must be less than 10 characters',
       ],  
     }),
+    async created() { 
+     try {
+            const response = await axios.get('http://localhost:8000/api/todos')
+            this.todos = response.data.todos
+        } catch (e) {
+            // handle the error here
+        }
+    },
   }
 </script>

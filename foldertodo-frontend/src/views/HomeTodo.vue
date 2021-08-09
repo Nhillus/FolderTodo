@@ -155,6 +155,21 @@
                         </v-card>
                       </v-dialog>
                     </v-btn>
+                    <v-btn
+                     icon fab
+                     x-small
+                     color="blue-grey lighten-3">
+                      <v-col>
+                        <v-btn
+                        class="ml-2"
+                        icon fab
+                        color="blue-grey lighten-3" >
+                          <v-icon>
+                            mdi-folder-download                          
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-btn>
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -203,14 +218,14 @@
                         :key="idx"
                         cols="4"
                       >
-                        <v-card height="70">
+                        <v-card height="100">
                             <v-list-item-content v-on:click.prevent="selecionarTodo(todo.id,todo.nombre)" >
                               <v-list-item-title>
                                 <v-btn icon fab>
                                   <v-checkbox @click.prevent="modificarEstatus()"
-                                    v-model="todo.estado" 
+                                    v-model="todo.estado"
                                     color="success"
-                                    value=1
+                                    value="true"
                                   ></v-checkbox>
                                 </v-btn>
                                 {{todo.nombre}}
@@ -325,7 +340,8 @@
       folderTodoRules: [
         v => !!v || 'Name is required',
         v => v.length <= 10 || 'Name must be less than 10 characters',
-      ],  
+      ], 
+    
     }),
     async created() { 
      try {

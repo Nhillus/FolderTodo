@@ -13,7 +13,7 @@ class Todo extends Model
     public function agregarTodo($nombre) {
         $todo = new Todo;
         $todo->nombre = $nombre;
-        $todo->estado = 0;
+        $todo->estado = "false";
         $todo->save();
         if (!$todo) {
             return response()->json(["success"=>false, "message" =>'Registro de todo fallida'],500);

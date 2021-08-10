@@ -22,15 +22,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-responsive max-width="260">
-          <v-text-field
-            dense
-            flat
-            hide-details
-            rounded
-            solo-inverted
-          ></v-text-field>
-        </v-responsive>
+        
       </v-container>
     </v-app-bar>
 
@@ -365,11 +357,12 @@
 
 <script>
   import axios from 'axios'
+  import { API_BASE_URL } from '../services/config' 
   export default {
     name:"HomeTodo",
     data: () => ({
       links: [
-        'Dashboard',
+        'FolderTodo',
       ],
       dialogAdd:false,
       dialogFolder:false,
@@ -416,9 +409,9 @@
     }),
     async created() { 
      try {
-            const responseF = await axios.get('http://localhost:8000/api/folders')
+            const responseF = await axios.get(API_BASE_URL +'/folders')
             this.folders = responseF.data.Folders
-            const response = await axios.get('http://localhost:8000/api/todos')
+            const response = await axios.get(API_BASE_URL +'/todos')
             this.todos = response.data.todos
             
         } catch (e) {
@@ -428,7 +421,7 @@
     methods: {
       agregarFolder() {
           axios
-          .post('http://localhost:8000/api/agregarfolder',this.folderTodo)
+          .post(API_BASE_URL + '/agregarfolder',this.folderTodo)
           .then((response) => {
             if (response.status == 201) {
                   this.folders.push(response.data.Folder);
@@ -439,7 +432,7 @@
         },
       agregarTodo() {
           axios
-          .post('http://localhost:8000/api/agregartodo',this.todoList)
+          .post(API_BASE_URL+'/agregartodo',this.todoList)
           .then((response) => {
             if (response.status == 201) {
                   this.todos.push(response.data.todo);
@@ -573,10 +566,7 @@
             const response = await axios.get('http://localhost:8000/api/todossingrupo')
             this.todosSinAgrupar = response.data.todosWithoutGroup;
             console.log(response);
-             
               //handle error
-            
-
         },
           
         agregarTodoAFolder() {

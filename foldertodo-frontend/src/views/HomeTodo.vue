@@ -37,7 +37,7 @@
     <v-main class="grey lighten-3">
       <v-container>
         <v-row>
-          <v-col cols="3">
+          <v-col cols="4">
             <v-sheet rounded="lg">
               <v-form v-model="valid" v-on:submit.prevent="agregarFolder()">
                 <v-container>
@@ -161,6 +161,7 @@
                      color="blue-grey lighten-3">
                       <v-col>
                         <v-btn
+                        @click.prevent="cargarTodo(folder.id,folder.nombre)"
                         class="ml-2"
                         icon fab
                         color="blue-grey lighten-3" >
@@ -200,7 +201,7 @@
                   <v-container>
                     <v-row>
                       <v-col
-                        cols="10"
+                        cols="9"
                       >
                         <v-text-field
                           v-if="!dialog"
@@ -218,45 +219,45 @@
                         :key="idx"
                         cols="4"
                       >
-                        <v-card height="100">
-                            <v-list-item-content v-on:click.prevent="selecionarTodo(todo.id,todo.nombre)" >
+                        <v-card height="100" >
+                            <v-list-item-content v-on:click.prevent="selecionarTodo(todo.id,todo.nombre,todo.estado)" >
                               <v-list-item-title>
                                 <v-btn icon fab>
-                                  <v-checkbox @click.prevent="modificarEstatus()"
+                                  <v-checkbox @click.prevent="modificarEstatus(todo.id,todo.nombre,todo.estado)"
                                     v-model="todo.estado"
                                     color="success"
                                     value="true"
                                   ></v-checkbox>
                                 </v-btn>
-                                {{todo.nombre}}
-                                <v-btn color="primary" class="ml-2" icon fab x-small >
-                                  <v-col cols="auto">
-                                    <v-btn
-                                      color="primary"
-                                      class="ml-2"
-                                      icon fab 
-                                      
-                                    ><v-icon v-on:click="dialog = true" >mdi-file-document-edit</v-icon>
-                                    </v-btn>
-                                    <v-btn color="primary"  icon fab x-small >
-                                      <v-col>
-                                        <v-btn
-                                          icon fab
-                                          color="red darken-4"
-                                          @click="eliminarTodo(todo.id)"
-                                          >
-                                            <v-icon >
-                                              mdi-delete-forever  
-                                            </v-icon>
-                                        </v-btn>
-                                      </v-col>
-                                    </v-btn>
-                                    <v-dialog
-                                      transition="dialog-top-transition"
-                                      max-width="600"
-                                      v-model="dialog"
-                                      :retain-focus="false"
-                                    >
+                                  {{todo.nombre}}
+                                  <v-btn color="primary" class="ml-2" icon fab x-small >
+                                    <v-col cols="auto">
+                                      <v-btn
+                                        color="primary"
+                                        class="ml-2"
+                                        icon fab 
+                                        
+                                      ><v-icon v-on:click="dialog = true" >mdi-file-document-edit</v-icon>
+                                      </v-btn>
+                                      <v-btn color="primary"  icon fab x-small >
+                                        <v-col>
+                                          <v-btn
+                                            icon fab
+                                            color="red darken-4"
+                                            @click="eliminarTodo(todo.id)"
+                                            >
+                                              <v-icon >
+                                                mdi-delete-forever  
+                                              </v-icon>
+                                          </v-btn>
+                                        </v-col>
+                                      </v-btn>
+                                      <v-dialog
+                                        transition="dialog-top-transition"
+                                        max-width="600"
+                                        v-model="dialog"
+                                        :retain-focus="false"
+                                      >
                                       <v-card>
                                         <v-toolbar
                                           color="primary"
@@ -286,8 +287,8 @@
                                     </v-dialog>
                                   </v-col>
                                 </v-btn>
-                              </v-list-item-title>
-                            </v-list-item-content>
+                            </v-list-item-title>
+                          </v-list-item-content>
                         </v-card>
                       </v-col>
                     </v-row>
@@ -325,16 +326,19 @@
       todoList: {
         id:'',
         nombre:'',
+        estado:'',
       },
       todoSelecionado: {
         id:'',
         nombre:'',
+        estado:'',
       },
       folderSelecionada: null,
       folderAModificar:null,
       folderAEliminar:null,
       todoAModificar:null,
       todoAEliminar:null,
+      todoEstado:null,
       folders: {},
       todos: {},
       folderTodoRules: [
@@ -377,7 +381,7 @@
           }); 
 
         },
-        selecionarFolder(idFolder,nombreFolder) {
+        selecionarFolder(idFolder,nombreFolder) { 
           this.folderSelecionado.id = idFolder; //1 refactor entre estas dos funciones 
           this.folderSelecionado.nombre = nombreFolder;
           this.folderAEliminar = idFolder;
@@ -387,13 +391,17 @@
 
 
         },
-        selecionarTodo(idTodo,nombreTodo) {
+        selecionarTodo(idTodo,nombreTodo,estadoTodo) {
           this.todoSelecionado.id = idTodo; //1 refactor entre estas dos funciones 
           this.todoSelecionado.nombre = nombreTodo;
+          this.todoSelecionado.estado = estadoTodo;
+          this.todoEstado = estadoTodo;
           this.todoAEliminar = idTodo;
+          this.todoAModificar = idTodo;
+
 
           //this.verActividades();
-          console.log(this.todoSelecionado.id, this.todoSelecionado.nombre );
+          console.log(this.todoSelecionado.id, this.todoSelecionado.nombre,this.todoSelecionado.estado );
 
         },
         modificarFolder() {
@@ -404,7 +412,7 @@
             if (response.status == 200) {
                   //this.actividades.put(response.data.Actividad);
                   this.folderAModificar = this.folderTodo.id;
-                  console.log(this.folderAModificar);
+                  console.log(this.todoAModificar);
                   let objIndex = this.folders.findIndex((obj => obj.id ==this.folderAModificar));
                   this.folders[objIndex].nombre = this.folderTodo.nombre;
                   console.log(objIndex);
@@ -430,7 +438,22 @@
               console.log(response);
           }); 
         },
-        modificarEstatus() {
+        async modificarEstatus(id,nombre,estado) {
+          this.todoList.id = id;
+          this.todoList.nombre = nombre;
+          this.todoList.estado = estado;
+         await axios
+            .put('http://localhost:8000/api/modificartodoestado', this.todoList)
+            .then((response) => {
+              if (response.status == 200) {
+                this.todoAModificar = this.todoList.id;
+                console.log(this.todoAEliminar);
+                let objIndex = this.todos.findIndex((obj => obj.id == id)); 
+                this.todos[objIndex].estado = this.todoList.estado;
+                console.log(objIndex)              
+                }
+              console.log(response);
+            })
          
         },
         estaEliminando(id) {
@@ -458,6 +481,15 @@
               console.log(response);
               
           });
+        },
+        async cargarTodo(id) {
+          await axios
+            .get('http://localhost:8000/api/cargartodos'+'/'+ id)
+            .then((response) => {
+              this.todos.splice(0,this.todos.length);
+              this.todos = response.data.todosInFolders
+              console.log(response);
+            });
         }
     }
   }

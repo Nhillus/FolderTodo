@@ -13,20 +13,28 @@ class FolderController extends Controller
         $allFolder = $folder->getAllFolders();
         return ['Folders'=> $allFolder];
     }
-    public function Store(Request $request) {
+    public function store(Request $request) {
         $folder = new Folder;
         $response=$folder->agregarFolder($request->nombre);
         return $response;
     }
-    public function Update(Request $request) {
+    public function update(Request $request) {
         $folder = new Folder;
         $response = $folder->modificarFolder($request->id,$request->nombre);
         return $response;
     }
-    public function Destroy($id) {
+    public function destroy($id) {
         $folder = new Folder;
         $response = $folder->eliminarFolder($id);
         return $response;
+    }
+    public function load($id) {
+        $folder = Folder::findOrFail($id);
+        //$todoInFolder = $folder->todos()->where('folder_id',$request->id)->get();
+        $todosInFolder = $folder->todos()->get();
+        return ['todosInFolders'=> $todosInFolder];
+        //return $request;
+
     }
 
 }

@@ -18,7 +18,7 @@ class TodoController extends Controller
             $response=$todo->agregarTodo($request->nombre);
             return $response;
     }
-    public function update (request $request) {
+    public function update (Request $request) {
         $todo = new Todo;
         $response = $todo->modificarTodo($request->id,$request->nombre);
         return $response;
@@ -26,6 +26,11 @@ class TodoController extends Controller
     public function destroy ($id) {
         $todo = new Todo;
         $response = $todo->eliminarTodo($id);
+        return $response;
+    }
+    public function UpdateStatus(Request $request) {
+        $todo = new Todo;
+        $response = $todo->modificarEstado($request->id,$request->estado);
         return $response;
     }
 }

@@ -188,7 +188,7 @@
                           :retain-focus="false"
                         >
                           <v-card>
-                            <v-card-title>Select Country</v-card-title>
+                            <v-card-title>Seleciona Todo</v-card-title>
                             <v-divider></v-divider>
                             <v-card-text style="height: 300px;">
                               <v-radio-group
@@ -529,6 +529,7 @@
               this.folders.splice(index,1);
               this.dialogDelete = false;
               console.log(response);
+              this.todosLosTodos();
           });
         },
 

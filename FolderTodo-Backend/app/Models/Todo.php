@@ -82,6 +82,20 @@ class Todo extends Model
                                  "Todo_Actual" => $todo],200);
     }
 
+    public function agregarTodoAFolder($idF,$idT) {
+        $todo = Todo::findOrFail($idT);
+        $todoModificada = $todo->folder_id;
+        $todo->folder_id = $idF;
+        $todo->save();
+        if (!$todo) {
+            return response()->json(["success"=>false, "message" =>'No se pudo encontrar la todo o no se pudo modificar consultar con dev'],500);
+        }
+        return response()->json(["success"=>true, 
+                                 "message" =>'Encontrado con exito la todo y modificada', 
+                                 "Todo_folder_id_Previa_A_La_Modificacion" => $todoModificada,
+                                 "Todo_Actual" => $todo],200);
+    }
+
     public function getAllTodos() {
         $todos = Todo::all();
         return $todos; 

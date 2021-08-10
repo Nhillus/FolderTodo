@@ -171,6 +171,66 @@
                         </v-btn>
                       </v-col>
                     </v-btn>
+                    <v-btn
+                    icon fab
+                    color="light-green darken-3"
+                    >
+                      <v-col>
+                        <v-btn
+                        class="ml-2"
+                        icon fab
+                        color="green darken-4"
+                        @click.prevent="estaSelecionando(folder.id)"
+                        >
+                          <v-icon>
+                            mdi-file-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-btn>
+                  <!----------------------------------------------------------------------------------------- ------------------------------------------------------------->
+                        <v-dialog
+                          v-model="dialogAdd"
+                          scrollable
+                          max-width="300px"
+                          :retain-focus="false"
+                        >
+                          <v-card>
+                            <v-card-title>Select Country</v-card-title>
+                            <v-divider></v-divider>
+                            <v-card-text style="height: 300px;">
+                              <v-radio-group
+                                v-model="folderAddTodo.idT"
+                                column
+                              >
+                                <v-radio
+                                v-for="(todo,idx) in todos"
+                                :key="idx"
+                                :label="todo.nombre"
+                                :value="todo.id"
+                                ></v-radio>
+                              </v-radio-group>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="dialogAdd = false"
+                              >
+                                Close
+                              </v-btn>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="agregarTodoAFolder()"
+                              >
+                                Save
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                  <!----------------------------------------------------------------------------------------- ------------------------------------------------------------->
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -180,9 +240,9 @@
                 link
                 color="grey lighten-4"
               >
-                <v-list-item-content>
+                <v-list-item-content @click.prevent="todosLosTodos()">
                   <v-list-item-title>
-                    Refresh
+                    Ver Todos los Todos
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -311,6 +371,7 @@
       links: [
         'Dashboard',
       ],
+      dialogAdd:false,
       dialogFolder:false,
       dialogDelete:false,
       dialog:false,
@@ -333,12 +394,17 @@
         nombre:'',
         estado:'',
       },
+      folderAddTodo: {
+        idF:'',
+        idT:'',
+      },
       folderSelecionada: null,
       folderAModificar:null,
       folderAEliminar:null,
       todoAModificar:null,
       todoAEliminar:null,
       todoEstado:null,
+      dialogm1: '',
       folders: {},
       todos: {},
       folderTodoRules: [
@@ -490,6 +556,28 @@
               this.todos = response.data.todosInFolders
               console.log(response);
             });
+        },
+        async todosLosTodos() {
+         try {
+            const response = await axios.get('http://localhost:8000/api/todos')
+            this.todos = response.data.todos
+         } catch (error) {
+           //handle error
+         }
+         
+        },
+        estaSelecionando(id) {
+            this.dialogAdd=true;
+            this.folderAddTodo.idF=id;
+
+        },
+          
+        agregarTodoAFolder() {
+          axios
+          .put('http://localhost:8000/api/agregartodoafolder',this.folderAddTodo)
+          .then((response)=> {
+            console.log(response);
+          });
         }
     }
   }

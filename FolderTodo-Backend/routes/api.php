@@ -28,6 +28,7 @@ Route::post('/agregartodo', 'TodoController@store');
 Route::put('/modificartodo', 'TodoController@update');
 Route::delete('/eliminartodo/{id}', 'TodoController@destroy');
 Route::put('/modificartodoestado', 'TodoController@UpdateStatus');
+Route::put('agregartodoafolder', 'TodoController@addTodoToFolder');
 /*--------------- Rutas FolderTodo ----------------------------*/
 Route::get('/folders','FolderController@index');
 Route::post('/agregarfolder', 'FolderController@store');

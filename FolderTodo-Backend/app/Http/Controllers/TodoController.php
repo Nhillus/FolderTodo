@@ -33,4 +33,9 @@ class TodoController extends Controller
         $response = $todo->modificarEstado($request->id,$request->estado);
         return $response;
     }
+    public function addTodoToFolder(Request $request) {
+        $todo = new Todo;
+        $response = $todo->agregarTodoAFolder($request->idF,$request->idT);
+        return $response;
+    }
 }

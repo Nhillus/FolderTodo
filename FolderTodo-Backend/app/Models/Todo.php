@@ -105,5 +105,10 @@ class Todo extends Model
         return $this->belongsTo(Folder::class);
     }
 
+    public function getAllTodosWithoutGroup() {
+        $todos = Todo::all()->where('folder_id',NULL);
+        return $todos;
+    }
+
 
 }

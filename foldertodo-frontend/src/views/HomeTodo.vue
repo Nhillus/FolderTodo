@@ -204,7 +204,7 @@
                                 column
                               >
                                 <v-radio
-                                v-for="(todo,idx) in todos"
+                                v-for="(todo,idx) in todosSinAgrupar"
                                 :key="idx"
                                 :label="todo.nombre"
                                 :value="todo.id"
@@ -407,6 +407,7 @@
       dialogm1: '',
       folders: {},
       todos: {},
+      todosSinAgrupar: {},
       folderTodoRules: [
         v => !!v || 'Name is required',
         v => v.length <= 10 || 'Name must be less than 10 characters',
@@ -566,9 +567,15 @@
          }
          
         },
-        estaSelecionando(id) {
-            this.dialogAdd=true;
+        async estaSelecionando(id) {
+             this.dialogAdd=true;
             this.folderAddTodo.idF=id;
+            const response = await axios.get('http://localhost:8000/api/todossingrupo')
+            this.todosSinAgrupar = response.data.todosWithoutGroup;
+            console.log(response);
+             
+              //handle error
+            
 
         },
           
@@ -576,6 +583,7 @@
           axios
           .put('http://localhost:8000/api/agregartodoafolder',this.folderAddTodo)
           .then((response)=> {
+            
             console.log(response);
           });
         }

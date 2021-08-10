@@ -38,4 +38,9 @@ class TodoController extends Controller
         $response = $todo->agregarTodoAFolder($request->idF,$request->idT);
         return $response;
     }
+    public function getWithoutGroup() {
+        $todo = new Todo;
+        $todosWithoutGroup = $todo->getAllTodosWithoutGroup();
+        return ['todosWithoutGroup'=> $todosWithoutGroup];
+    }
 }

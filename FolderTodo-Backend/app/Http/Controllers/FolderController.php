@@ -34,7 +34,6 @@ class FolderController extends Controller
         $todosInFolder = $folder->todos()->get();
         return ['todosInFolders'=> $todosInFolder];
         //return $request;
-
     }
 
 }

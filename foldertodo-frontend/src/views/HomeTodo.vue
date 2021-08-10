@@ -467,7 +467,7 @@
         modificarFolder() {
           this.folderTodo.id = this.folderSelecionado.id;
           axios
-            .put('http://localhost:8000/api/modificarfolder',this.folderTodo)
+            .put(API_BASE_URL + '/modificarfolder',this.folderTodo)
             .then((response) => {
             if (response.status == 200) {
                   //this.actividades.put(response.data.Actividad);
@@ -484,7 +484,7 @@
         modificarTodo() {
           this.todoList.id = this.todoSelecionado.id;
           axios
-            .put('http://localhost:8000/api/modificartodo',this.todoList)
+            .put(API_BASE_URL + '/modificartodo',this.todoList)
             .then((response) => {
             if (response.status == 200) {
                   //this.actividades.put(response.data.Actividad);
@@ -503,7 +503,7 @@
           this.todoList.nombre = nombre;
           this.todoList.estado = estado;
          await axios
-            .put('http://localhost:8000/api/modificartodoestado', this.todoList)
+            .put(API_BASE_URL + '/modificartodoestado', this.todoList)
             .then((response) => {
               if (response.status == 200) {
                 this.todoAModificar = this.todoList.id;
@@ -524,7 +524,7 @@
         async eliminarFolder(id) {
           let index = this.folders.findIndex(folder => folder.id === id)
            await axios
-            .delete('http://localhost:8000/api/eliminarfolder'+'/'+ id)  
+            .delete(API_BASE_URL + '/eliminarfolder'+'/'+ id)  
             .then((response) => {
               this.folders.splice(index,1);
               this.dialogDelete = false;
@@ -535,7 +535,7 @@
         async eliminarTodo(id) {
           let index = this.todos.findIndex(todo => todo.id === id)
            await axios
-            .delete('http://localhost:8000/api/eliminartodo'+'/'+ id)  
+            .delete(API_BASE_URL + '/eliminartodo'+'/'+ id)  
             .then((response) => {
               this.todos.splice(index,1);
               console.log(response);
@@ -544,7 +544,7 @@
         },
         async cargarTodo(id) {
           await axios
-            .get('http://localhost:8000/api/cargartodos'+'/'+ id)
+            .get(API_BASE_URL + '/cargartodos'+'/'+ id)
             .then((response) => {
               this.todos.splice(0,this.todos.length);
               this.todos = response.data.todosInFolders
@@ -571,9 +571,9 @@
           
         agregarTodoAFolder() {
           axios
-          .put('http://localhost:8000/api/agregartodoafolder',this.folderAddTodo)
+          .put(API_BASE_URL + '/agregartodoafolder',this.folderAddTodo)
           .then((response)=> {
-            
+            this.dialogAdd=false;
             console.log(response);
           });
         }
